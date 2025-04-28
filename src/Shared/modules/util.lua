@@ -15,18 +15,19 @@ function util.formatDouble(number, place)
         number = number .. "."
         decimalIndex = #number
     end
+
+    -- Checks to see if it's longer than 3 decimals
+    if #string.sub(number, decimalIndex + 1) > 3 then
+        number = string.sub(number, 1, decimalIndex + 3)
+    else
+        -- Finds the number of zeros that needed to be added
+        local zerosToAdd = place - (#number - decimalIndex)
         
-    -- Finds the number of zeros that needed to be added
-    local zerosToAdd = place - (#number - decimalIndex)
-    print(zerosToAdd)
-        
-    -- Add the zeros if necessary
-    for i = 1, zerosToAdd do
-        number = number .. "0"
+        -- Adds the zeros if necessary
+        for i = 1, zerosToAdd do
+            number = number .. "0"
+        end
     end
-    -- if zerosToAdd > 0 then
-    --     number = number .. string.rep("0", zerosToAdd)
-    -- end
         
     return number
 end

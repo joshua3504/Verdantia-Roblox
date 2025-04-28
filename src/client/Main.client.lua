@@ -32,15 +32,12 @@ coroutine.resume(coroutine.create(function()
             infoScreen.facing.Text = infoScreen.facing:GetAttribute("facing") .. ":"
         else
             -- Handles the coordinates
-            local x = math.round(hrp.Position.X / 3)
-            local y = math.round(hrp.Position.Y / 3)
-            local z = math.round(hrp.Position.Z / 3)
-            -- local x = util.formatDouble(util.round(hrp.Position.X / 3, 3), 3)
-            -- local y = util.formatDouble(util.round(hrp.Position.Y / 3, 3), 3)
-            -- local z = util.formatDouble(util.round(hrp.Position.Z / 3, 3), 3)
+            local x = util.formatDouble(util.round(hrp.Position.X / 3, 3), 3)
+            local y = util.formatDouble(util.round(hrp.Position.Y / 3, 3), 3)
+            local z = util.formatDouble(util.round(hrp.Position.Z / 3, 3), 3)
     
             infoScreen.coordinates.Text = infoScreen.coordinates:GetAttribute("coordinates") .. ": " .. x .. ", " .. y .. ", " .. z
-
+            
             -- Handles the direction the player is facing
             local lookVector = hrp.CFrame.LookVector
             local facingDirection

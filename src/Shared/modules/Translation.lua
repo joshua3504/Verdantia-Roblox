@@ -7,15 +7,15 @@ local Translation = {}
 
 function Translation.translate(player, langCode)
     langCode = langCode:gsub("-", "_"):lower()
-    local mainGui = player.PlayerGui:WaitForChild("mainGui")
+    local infoScreen = player.PlayerGui:WaitForChild("mainGui").infoScreen
     local langFile = langFiles[langCode] or langFiles.en_us
 
-    mainGui.infoScreen.coordinates:SetAttribute("coordinates", langFile.infoScreen.coordinates)
-    mainGui.infoScreen.facing:SetAttribute("facing", langFile.infoScreen.facing)
-    mainGui.infoScreen.facing:SetAttribute("east", langFile.infoScreen.directions.east)
-    mainGui.infoScreen.facing:SetAttribute("north", langFile.infoScreen.directions.north)
-    mainGui.infoScreen.facing:SetAttribute("south", langFile.infoScreen.directions.south)
-    mainGui.infoScreen.facing:SetAttribute("west", langFile.infoScreen.directions.west)
+    infoScreen.coordinates:SetAttribute("coordinates", langFile.infoScreen.coordinates)
+    infoScreen.facing:SetAttribute("facing", langFile.infoScreen.facing)
+    infoScreen.facing:SetAttribute("east", langFile.infoScreen.directions.east)
+    infoScreen.facing:SetAttribute("north", langFile.infoScreen.directions.north)
+    infoScreen.facing:SetAttribute("south", langFile.infoScreen.directions.south)
+    infoScreen.facing:SetAttribute("west", langFile.infoScreen.directions.west)
 end
 
 return Translation
