@@ -16,6 +16,7 @@ function Translation.translate(player, langCode)
     infoScreen.facing:SetAttribute("north", langFile.infoScreen.directions.north)
     infoScreen.facing:SetAttribute("south", langFile.infoScreen.directions.south)
     infoScreen.facing:SetAttribute("west", langFile.infoScreen.directions.west)
+    infoScreen.timeOfDay:SetAttribute("timeOfDay", langFile.infoScreen.timeOfDay)
 end
 
 return Translation

@@ -43,4 +43,6 @@ end
 
 workspace.SpawnLocation:Destroy()
 
+World.startDaylightCycle()
+
 -- print(chunks)

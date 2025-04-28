@@ -7,6 +7,7 @@ return {
             south = "South",
             west = "West"
         },
-        facing = "Facing"
+        facing = "Facing",
+        timeOfDay = "Time"
     }
 }

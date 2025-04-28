@@ -32,4 +32,20 @@ function util.formatDouble(number, place)
     return number
 end
 
+function util.formatTime(minutes, includeSeconds)
+    local totalSeconds = math.floor(minutes * 60)
+    local hours = math.floor(totalSeconds / 3600)
+    local mins = math.floor((totalSeconds % 3600) / 60)
+    local seconds = totalSeconds % 60
+
+    -- Format each part with two digits
+    local formatted = string.format("%02d:%02d", hours, mins)
+
+    if includeSeconds then
+        formatted = string.format("%s:%02d", formatted, seconds)
+    end
+
+    return formatted
+end
+
 return util

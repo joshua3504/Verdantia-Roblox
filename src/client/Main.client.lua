@@ -13,11 +13,24 @@ local util = require(modules.util)
 local mainGui = localPlayer.PlayerGui:WaitForChild("mainGui")
 local inventoryFrame = mainGui.inventory
 local infoScreen = mainGui.infoScreen
+-- Setting up the default settings
+UIS.MouseIconEnabled = false
+localPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
+UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
 
 -- Handles the inventory being opened and closed
 UIS.InputEnded:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.E then
         inventoryFrame.Visible = not inventoryFrame.Visible
+        UIS.MouseIconEnabled = inventoryFrame.Visible
+
+        if inventoryFrame.Visible then
+            localPlayer.CameraMode = Enum.CameraMode.Classic
+            UIS.MouseBehavior = Enum.MouseBehavior.Default
+        else
+            localPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
+            UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
+        end
     end
 end)
 
@@ -33,7 +46,7 @@ coroutine.resume(coroutine.create(function()
         else
             -- Handles the coordinates
             local x = util.formatDouble(util.round(hrp.Position.X / 3, 3), 3)
-            local y = util.formatDouble(util.round(hrp.Position.Y / 3, 3), 3)
+            local y = util.formatDouble(util.round(hrp.Position.Y / 3 - 0.5, 3), 3)
             local z = util.formatDouble(util.round(hrp.Position.Z / 3, 3), 3)
     
             infoScreen.coordinates.Text = infoScreen.coordinates:GetAttribute("coordinates") .. ": " .. x .. ", " .. y .. ", " .. z
@@ -58,6 +71,10 @@ coroutine.resume(coroutine.create(function()
 
             infoScreen.facing.Text = infoScreen.facing:GetAttribute("facing") .. ": " .. infoScreen.facing:GetAttribute(facingDirection)
         end
+
+        -- Handles the time of day
+        infoScreen.timeOfDay.Text = infoScreen.timeOfDay:GetAttribute("timeOfDay") .. ": " ..
+            util.formatTime(game:GetService("Lighting"):GetMinutesAfterMidnight(), false)
     end
 end))
 

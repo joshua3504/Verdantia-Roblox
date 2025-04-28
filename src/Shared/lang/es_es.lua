@@ -7,6 +7,7 @@ return {
             south = "Sur",
             west = "Oeste"
         },
-        facing = "Mirando al"
+        facing = "Mirando al",
+        timeOfDay = "Hora"
     }
 }
