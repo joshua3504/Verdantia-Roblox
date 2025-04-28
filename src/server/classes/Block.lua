@@ -1,7 +1,6 @@
 -- Services
+local RS = game:GetService("ReplicatedStorage")
 local SSS = game:GetService("ServerScriptService").Server
--- Registries
-local BlockRegistry = require(SSS.registries.BlockRegistry)
 -- JSON files
 local config = require(SSS.misc.config)
 local worldGenSettings = require(SSS.worldGen.settings)
@@ -15,55 +14,54 @@ Block.size = {
 	z = 3
 }
 
-function getPropertyOrDefault(blockInfo, property)
-	if blockInfo[property] ~= nil then
-		return blockInfo[property]
-	else
-		return BlockRegistry.defaultSettings[property]
-	end
-end
-
 function Block.new(name, xPos, yPos, zPos)
-	local blockInfo = BlockRegistry.getBlockInfo(name)
 	local newBlock = setmetatable({}, Block)
-	
-	newBlock.name = config.namespace .. ":" .. blockInfo.name
-	newBlock.blockPlacement = getPropertyOrDefault(blockInfo, "blockPlacement")
-	newBlock.breakSpeed = blockInfo.breakSpeed
-	newBlock.canCollide = getPropertyOrDefault(blockInfo, "canCollide")
-	newBlock.color = blockInfo.color
-	newBlock.needsTool = getPropertyOrDefault(blockInfo, "needsTool")
-	newBlock.partClass = getPropertyOrDefault(blockInfo, "partClass")
+
+	newBlock.name = config.namespace .. ":" .. name
 	newBlock.position = {
 		x = xPos,
 		y = yPos,
 		z = zPos
 	}
-	newBlock.size = Block.size
-	newBlock.transparency = getPropertyOrDefault(blockInfo, "transparency")
-	newBlock.unbreakable = getPropertyOrDefault(blockInfo, "unbreakable")
-	
+
 	return newBlock
 end
 
 function Block:createPart()
-	local part = Instance.new(self.partClass)
-	
-	part.Anchored = true
-	part.CanCollide = self.canCollide
-	part.Color = Color3.fromHex(self.color)
-	part.Material = Enum.Material.SmoothPlastic
-	part.Name = self.name
+	local part = RS.blocks[self.name]:Clone()
+	-- part.Name = "block_x" .. self.position.x .. "y" .. self.position.y .. "z" .. self.position.z
 	part.Position = Vector3.new(self.position.x * worldGenSettings.blockSize,
 		self.position.y * worldGenSettings.blockSize, self.position.z * worldGenSettings.blockSize)
-	part.Size = Vector3.new(self.size.x, self.size.y, self.size.z)
-	part.Transparency = self.transparency
-	
 	self.part = part
 end
 
 function Block:spawnPart()
 	self.part.Parent = workspace.blocks
+end
+
+function Block:shouldRender(chunkBlocks)
+	local x = self.position.x
+	local y = self.position.y
+	local z = self.position.z
+
+	-- if x - 1 < 0 or z - 1 < 0 or y - 1 < 0 then
+	-- 	return true -- Returns true if it's on the outside of a chunk
+	-- else
+	local above = chunkBlocks["block_x" .. x .. "y" .. (y + 1) .. "z" .. z]
+	local below = chunkBlocks["block_x" .. x .. "y" .. (y - 1) .. "z" .. z]
+	local north = chunkBlocks["block_x" .. x .. "y" .. y .. "z" .. (z - 1)]
+	local south = chunkBlocks["block_x" .. x .. "y" .. y .. "z" .. (z + 1)]
+	local east = chunkBlocks["block_x" .. (x + 1) .. "y" .. y .. "z" .. z]
+	local west = chunkBlocks["block_x" .. (x - 1) .. "y" .. y .. "z" .. z]
+
+	if above and below and north and south and east and west then
+		-- print("don't render")
+		return false
+	else
+		-- print("render")
+		return true
+	end
+	-- end
 end
 
 return Block

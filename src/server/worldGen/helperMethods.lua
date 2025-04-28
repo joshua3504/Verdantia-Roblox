@@ -16,15 +16,15 @@ function helperMethods.getHeight(x, z, biomeSettings)
 end
 
 function helperMethods.addEntryToChunkTable(chunkTable, newBlock, chunkX, chunkZ, worldX, worldY, worldZ)
+	-- if worldX < 10 then 
+	-- 	worldX = "0" .. worldX
+	-- elseif worldX < 99
+	-- end
+	-- if worldY < 10 then worldY = "0" .. worldY end
+	-- if worldZ < 10 then worldZ = "0" .. worldZ end
+
 	local blockId = "block_x" .. worldX .. "y" .. worldY .. "z" .. worldZ
 	chunkTable.blocks[blockId] = newBlock
-	--chunkTable.blocks[blockId] = {
-	--	position = {
-	--		x = worldX,
-	--		y = worldY,
-	--		z = worldZ
-	--	}
-	--}
 	
 	return chunkTable
 end
