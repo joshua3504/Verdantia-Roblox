@@ -2,10 +2,10 @@ return {
     infoScreen = {
         coordinates = "Coordinadas",
         directions = {
-            east = "este",
-            north = "norte",
-            south = "sur",
-            west = "oeste"
+            east = "Este",
+            north = "Norte",
+            south = "Sur",
+            west = "Oeste"
         },
         facing = "Mirando al"
     }

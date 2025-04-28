@@ -6,6 +6,7 @@ local langFiles = {
 local Translation = {}
 
 function Translation.translate(player, langCode)
+    langCode = langCode:gsub("-", "_"):lower()
     local mainGui = player.PlayerGui:WaitForChild("mainGui")
     local langFile = langFiles[langCode] or langFiles.en_us
 
