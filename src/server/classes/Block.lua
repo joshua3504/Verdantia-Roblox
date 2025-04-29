@@ -1,6 +1,8 @@
 -- Services
 local RS = game:GetService("ReplicatedStorage")
 local SSS = game:GetService("ServerScriptService").Server
+-- Classes
+local DroppedBlock = require(SSS.classes.DroppedBlock)
 -- JSON files
 local worldGenSettings = require(SSS.worldGen.settings)
 -- Instantiation
@@ -45,7 +47,11 @@ function Block:spawnPart()
 	self.part.Parent = workspace.blocks
 end
 
-function Block:remove(chunksTable)
+function Block:removeAndDrop(chunksTable)
+	local droppedBlock = DroppedBlock.new(self.name, self.position)
+	droppedBlock:createPart()
+	droppedBlock:spawnPart()
+
 	chunksTable[self.chunkId].blocks[self:getBlockId()] = nil
 	self.part:Destroy()
 end

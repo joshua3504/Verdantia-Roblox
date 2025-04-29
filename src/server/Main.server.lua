@@ -1,4 +1,5 @@
 -- Services
+local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 local SSS = game:GetService("ServerScriptService").Server
 -- Handlers
@@ -6,6 +7,7 @@ local WorldGenHandler = require(SSS.worldGen.WorldGenHandler)
 -- Classes
 local classes = SSS.classes
 local Block = require(classes.Block)
+local Inventory = require(classes.Inventory)
 local World = require(classes.World)
 -- JSON files
 local worldGenSettings = require(SSS.worldGen.settings)
@@ -46,13 +48,18 @@ workspace.SpawnLocation:Destroy()
 -- Starts  the daylight cycle
 World.startDaylightCycle()
 
+-- Handles the players' inventories
+Players.PlayerAdded:Connect(function(player)
+	Inventory.new(player)
+end)
+
 -- Handles destroying blocks
 RS.remotes.breakBlock.OnServerEvent:Connect(function(player, blockPart)
 	if not blockPart then return end
-	
+
 	local blockObject = chunks[blockPart:GetAttribute("chunkId")].blocks[blockPart:GetAttribute("blockId")]
 	if blockObject ~= nil then
-		blockObject:remove(chunks)
+		blockObject:removeAndDrop(chunks)
 	end
 end)
 
