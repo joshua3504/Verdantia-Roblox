@@ -1,4 +1,5 @@
 -- Services
+local RS = game:GetService("ReplicatedStorage")
 local SSS = game:GetService("ServerScriptService").Server
 -- Handlers
 local WorldGenHandler = require(SSS.worldGen.WorldGenHandler)
@@ -29,12 +30,12 @@ for _, chunk in pairs(chunks) do
 	end))
 end
 
-local spawnpoint = Block.new("spawnpoint", 0, World.spawnpointPosition.y, 0)
+local spawnpoint = Block.new("spawnpoint", "chunk_x0z0", 0, World.spawnpointPosition.y, 0)
 --chunks["chunk_x0z0"].blocks.["block_x0z0"]
 spawnpoint:createPart()
 spawnpoint:spawnPart()
 
--- Teleport all players to the spawn
+-- Teleports all players to the spawn
 for _, player in pairs(game:GetService("Players"):GetPlayers()) do
 	player.Character:PivotTo(
 		workspace.blocks:FindFirstChild("spawnpoint").CFrame + Vector3.new(0, worldGenSettings.blockSize, 0))
@@ -42,6 +43,17 @@ end
 
 workspace.SpawnLocation:Destroy()
 
+-- Starts  the daylight cycle
 World.startDaylightCycle()
+
+-- Handles destroying blocks
+RS.remotes.breakBlock.OnServerEvent:Connect(function(player, blockPart)
+	if not blockPart then return end
+	
+	local blockObject = chunks[blockPart:GetAttribute("chunkId")].blocks[blockPart:GetAttribute("blockId")]
+	if blockObject ~= nil then
+		blockObject:remove(chunks)
+	end
+end)
 
 -- print(chunks)

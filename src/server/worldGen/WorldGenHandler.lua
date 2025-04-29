@@ -29,9 +29,9 @@ function WorldGenHandler.createChunk(seed, chunkX, chunkZ)
 					local newBlock
 				
 					if math.random() < worldGenSettings.voidstoneGen["layer" .. layer] then
-						newBlock = Block.new("voidstone", x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
+						newBlock = Block.new("voidstone", chunkId, x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
 					else
-						newBlock = Block.new("stone", x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
+						newBlock = Block.new("stone", chunkId, x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
 					end
 					
 					helperMethods.addEntryToChunkTable(chunkTable, newBlock, chunkX, chunkZ, x, layer, z)
@@ -50,11 +50,11 @@ function WorldGenHandler.createChunk(seed, chunkX, chunkZ)
 						local newBlock
 						
 						if height - layer == 0 then
-							newBlock = Block.new("grass", x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
+							newBlock = Block.new("grass", chunkId, x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
 						elseif height - layer <= 4 then
-							newBlock = Block.new("dirt", x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
+							newBlock = Block.new("dirt", chunkId, x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
 						else
-							newBlock = Block.new("stone", x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
+							newBlock = Block.new("stone", chunkId, x + (chunkX * worldGenSettings.chunkSize), layer, z + (chunkZ * worldGenSettings.chunkSize))
 						end
 						
 						helperMethods.addEntryToChunkTable(chunkTable, newBlock, chunkX, chunkZ, x, layer, z)

@@ -5,6 +5,11 @@ function util.round(number, place)
     return math.round(number / place) * place
 end
 
+function util.ceil(number, place)
+    place = 10 ^ -place
+    return math.ceil(number / place) * place
+end
+
 -- Adds the specified number of zeros (place) to the end of a double
 function util.formatDouble(number, place)
     number = tostring(number)

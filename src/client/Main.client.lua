@@ -7,6 +7,7 @@ local UIS = game:GetService("UserInputService")
 -- Misc
 local localPlayer = Players.LocalPlayer
 local mouse = localPlayer:GetMouse()
+local remotes = RS.remotes
 -- Module scripts
 local modules = RS.Shared.modules
 local config = require(modules.config)
@@ -82,23 +83,57 @@ coroutine.resume(coroutine.create(function()
 end))
 
 -- Handles the block the player is hovering over being highlighted
-local lastHighlightedBlock
+local currentHoveredBlock
 
 RunService.PreRender:Connect(function()
     if mouse.Target then
-        if mouse.Target ~= lastHighlightedBlock then
-            if lastHighlightedBlock then
-                lastHighlightedBlock:FindFirstChildOfClass("Highlight"):Destroy()
-                lastHighlightedBlock = nil
+        if mouse.Target ~= currentHoveredBlock then
+            if currentHoveredBlock then
+                currentHoveredBlock:FindFirstChildOfClass("Highlight"):Destroy()
+                currentHoveredBlock = nil
             end
 
             if mouse.Target.Parent == workspace.blocks and mouse.Target.Transparency < 1 then    
                 if (mouse.Target.Position - localPlayer.Character.PrimaryPart.Position).magnitude < config.reachDistance * config.blockSize then    
                     local highlight = RS.misc.blockHighlight:Clone()
                     highlight.Parent = mouse.Target
-                    lastHighlightedBlock = mouse.Target
+                    currentHoveredBlock = mouse.Target
                 end
             end
+        end
+    end
+end)
+
+local blockBeingBroken = nil
+mouse.Button1Down:Connect(function()
+    if currentHoveredBlock ~= nil and blockBeingBroken == nil then
+        if currentHoveredBlock:GetAttribute("unbreakable") ~= true then
+            blockBeingBroken = currentHoveredBlock
+            
+            local steps = 20
+            local stepTime = currentHoveredBlock:GetAttribute("breakSpeed") / steps
+            
+            for i = 1, steps do
+                if blockBeingBroken ~= nil then
+                    currentHoveredBlock.Transparency = util.ceil(i / steps, 2)
+                    task.wait(stepTime)
+                else
+                    return
+                end
+            end
+
+            if blockBeingBroken then blockBeingBroken:SetAttribute("isBroken", true) end
+            remotes.breakBlock:FireServer(blockBeingBroken)
+            blockBeingBroken = nil
+        end
+    end
+end)
+
+mouse.Button1Up:Connect(function()
+    if blockBeingBroken ~= nil then
+        if blockBeingBroken:GetAttribute("isBroken") ~= true then
+            blockBeingBroken.Transparency = 0
+            blockBeingBroken = nil
         end
     end
 end)
