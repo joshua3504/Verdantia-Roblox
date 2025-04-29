@@ -7,7 +7,6 @@ local classes = SSS.classes
 local Block = require(classes.Block)
 local World = require(classes.World)
 -- JSON files
-local config = require(SSS.misc.config)
 local worldGenSettings = require(SSS.worldGen.settings)
 -- Variables
 local chunks = {}
@@ -38,7 +37,7 @@ spawnpoint:spawnPart()
 -- Teleport all players to the spawn
 for _, player in pairs(game:GetService("Players"):GetPlayers()) do
 	player.Character:PivotTo(
-		workspace.blocks:FindFirstChild(config.namespace .. ":spawnpoint").CFrame + Vector3.new(0, worldGenSettings.blockSize, 0))
+		workspace.blocks:FindFirstChild("spawnpoint").CFrame + Vector3.new(0, worldGenSettings.blockSize, 0))
 end
 
 workspace.SpawnLocation:Destroy()

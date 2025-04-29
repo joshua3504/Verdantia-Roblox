@@ -1,9 +1,11 @@
+-- Services
+local Lighting = game:GetService("Lighting")
 -- Instantiation
 local World = {}
 World.__index = {}
 -- Fields
 World.lengthOfDay = 1440
-World.timeOfDay = 370
+World.timeOfDay = Lighting:GetMinutesAfterMidnight()
 World.daylightCycle = nil
 World.spawnpointPosition = {}
 
@@ -21,7 +23,7 @@ function World.startDaylightCycle()
 			while true do
 				task.wait(1)
 				World.timeOfDay += 1
-				game:GetService("Lighting"):SetMinutesAfterMidnight(World.timeOfDay)
+				Lighting:SetMinutesAfterMidnight(World.timeOfDay)
 			end
 		end)
 		coroutine.resume(World.daylightCycle)

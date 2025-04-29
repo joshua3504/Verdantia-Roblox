@@ -1,3 +1,3 @@
 return {
-	namespace = "verdantia"
+	reachDistance = 3
 }

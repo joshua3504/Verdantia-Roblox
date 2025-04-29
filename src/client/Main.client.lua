@@ -2,11 +2,14 @@
 local LocalizationService = game:GetService("LocalizationService")
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
 -- Misc
 local localPlayer = Players.LocalPlayer
+local mouse = localPlayer:GetMouse()
 -- Module scripts
 local modules = RS.Shared.modules
+local config = require(modules.config)
 local Translation = require(modules.Translation)
 local util = require(modules.util)
 -- GUIs
@@ -77,6 +80,28 @@ coroutine.resume(coroutine.create(function()
             util.formatTime(game:GetService("Lighting"):GetMinutesAfterMidnight(), false)
     end
 end))
+
+-- Handles the block the player is hovering over being highlighted
+local lastHighlightedBlock
+
+RunService.PreRender:Connect(function()
+    if mouse.Target then
+        if mouse.Target ~= lastHighlightedBlock then
+            if lastHighlightedBlock then
+                lastHighlightedBlock:FindFirstChildOfClass("Highlight"):Destroy()
+                lastHighlightedBlock = nil
+            end
+
+            if mouse.Target.Parent == workspace.blocks and mouse.Target.Transparency < 1 then    
+                if (mouse.Target.Position - localPlayer.Character.PrimaryPart.Position).magnitude < config.reachDistance * config.blockSize then    
+                    local highlight = RS.misc.blockHighlight:Clone()
+                    highlight.Parent = mouse.Target
+                    lastHighlightedBlock = mouse.Target
+                end
+            end
+        end
+    end
+end)
 
 -- Handles the translations
 local translator = LocalizationService:GetTranslatorForPlayer(localPlayer)

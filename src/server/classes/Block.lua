@@ -2,7 +2,6 @@
 local RS = game:GetService("ReplicatedStorage")
 local SSS = game:GetService("ServerScriptService").Server
 -- JSON files
-local config = require(SSS.misc.config)
 local worldGenSettings = require(SSS.worldGen.settings)
 -- Instantiation
 local Block = {}
@@ -17,7 +16,7 @@ Block.size = {
 function Block.new(name, xPos, yPos, zPos)
 	local newBlock = setmetatable({}, Block)
 
-	newBlock.name = config.namespace .. ":" .. name
+	newBlock.name = name
 	newBlock.position = {
 		x = xPos,
 		y = yPos,
