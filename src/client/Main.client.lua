@@ -3,6 +3,7 @@ local LocalizationService = game:GetService("LocalizationService")
 local Players = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
 local UIS = game:GetService("UserInputService")
 -- Misc
 local localPlayer = Players.LocalPlayer
@@ -11,27 +12,37 @@ local remotes = RS.remotes
 -- Module scripts
 local modules = RS.Shared.modules
 local config = require(modules.config)
+local Hud = require(modules.Hud)
 local Translation = require(modules.Translation)
 local util = require(modules.util)
 -- GUIs
 local mainGui = localPlayer.PlayerGui:WaitForChild("mainGui")
 local inventoryFrame = mainGui.inventory
 local infoScreen = mainGui.infoScreen
+-- Variables
+local inventoryOpen = false
 -- Setting up the default settings
 UIS.MouseIconEnabled = false
 localPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
 UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu, false)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Health, false)
+StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+local playerHud = Hud.new(localPlayer)
 
 -- Handles the inventory being opened and closed
 UIS.InputEnded:Connect(function(input)
     if input.KeyCode == Enum.KeyCode.E then
-        inventoryFrame.Visible = not inventoryFrame.Visible
-        UIS.MouseIconEnabled = inventoryFrame.Visible
+        inventoryOpen = not inventoryOpen
+        UIS.MouseIconEnabled = inventoryOpen
 
-        if inventoryFrame.Visible then
+        if inventoryOpen then
+            inventoryFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
             localPlayer.CameraMode = Enum.CameraMode.Classic
             UIS.MouseBehavior = Enum.MouseBehavior.Default
         else
+            inventoryFrame.Position = UDim2.new(0.5, 0, -0.75, 0)
             localPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
             UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
         end
@@ -104,12 +115,13 @@ RunService.PreRender:Connect(function()
     end
 end)
 
+-- Handles block breaking
 local blockBeingBroken = nil
 mouse.Button1Down:Connect(function()
     if currentHoveredBlock ~= nil and blockBeingBroken == nil then
         if currentHoveredBlock:GetAttribute("unbreakable") ~= true then
             blockBeingBroken = currentHoveredBlock
-            
+
             local steps = 20
             local stepTime = currentHoveredBlock:GetAttribute("breakSpeed") / steps
             
@@ -135,6 +147,21 @@ mouse.Button1Up:Connect(function()
             blockBeingBroken.Transparency = 0
             blockBeingBroken = nil
         end
+    end
+end)
+
+-- Handles updating the blocks in the inventory
+remotes.updateInventoryRender.OnClientEvent:Connect(function(inventory)
+    for i, slot in pairs(inventory.hotbar.slots) do
+        RS.items[slot]:Clone().Parent = mainGui.hotbar.hotbar[i].ViewportFrame
+        RS.items[slot]:Clone().Parent = inventoryFrame.container.hotbar[i].ViewportFrame
+    end
+end)
+
+-- Handles updating the HUD
+remotes.updateHudRender.OnClientEvent:Connect(function(health, hunger, thirst)
+    if health ~= nil then
+        playerHud:updateHealthRender(health)
     end
 end)
 

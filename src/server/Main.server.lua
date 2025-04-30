@@ -7,7 +7,7 @@ local WorldGenHandler = require(SSS.worldGen.WorldGenHandler)
 -- Classes
 local classes = SSS.classes
 local Block = require(classes.Block)
-local Inventory = require(classes.Inventory)
+local Player = require(classes.Player)
 local World = require(classes.World)
 -- JSON files
 local worldGenSettings = require(SSS.worldGen.settings)
@@ -50,8 +50,12 @@ World.startDaylightCycle()
 
 -- Handles the players' inventories
 Players.PlayerAdded:Connect(function(player)
-	Inventory.new(player)
+	Player.new(player)
 end)
+
+for _, player in pairs(Players:GetPlayers()) do
+	Player.new(player)
+end
 
 -- Handles destroying blocks
 RS.remotes.breakBlock.OnServerEvent:Connect(function(player, blockPart)
@@ -60,6 +64,17 @@ RS.remotes.breakBlock.OnServerEvent:Connect(function(player, blockPart)
 	local blockObject = chunks[blockPart:GetAttribute("chunkId")].blocks[blockPart:GetAttribute("blockId")]
 	if blockObject ~= nil then
 		blockObject:removeAndDrop(chunks)
+	end
+end)
+
+task.spawn(function()
+	while true do
+		for _, player in pairs(Player.getPlayersCache()) do
+			player:damageHealth(1)
+			-- print(player.health)
+			player:updateHudRender(true, false, false)
+		end
+		task.wait(1)
 	end
 end)
 
